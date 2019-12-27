@@ -12,7 +12,7 @@ import config
 
 def setup():
     trello = TrelloApi(config.TRELLO_APP_KEY)
-    trello.set_token(config.USER_TOKEN)
+    trello.set_token(config.TRELLO_USER_TOKEN)
     return trello
 
 
@@ -38,7 +38,8 @@ def get_readtime_in_min(page_soup):
 
 def create_card(title, url, time_to_read_in_min):
     name = f"[Read Article] ({time_to_read_in_min} minutes) {title}"
-    trello.cards.new(idList=config.LIST_ID, name=name, desc=url)
+    trello.cards.new(idList=config.TRELLO_LIST_ID, name=name, desc=url)
+    print(f"Card created: {name}")
 
 
 @click.group()
