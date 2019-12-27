@@ -1,3 +1,11 @@
-bs4
-click
-trello
+beautifulsoup4==4.8.2
+bs4==0.0.1
+certifi==2019.11.28
+chardet==3.0.4
+Click==7.0
+idna==2.8
+pystache==0.5.4
+requests==2.22.0
+soupsieve==1.9.5
+trello==0.9.4
+urllib3==1.25.7

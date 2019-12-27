@@ -1,7 +1,6 @@
 #!/usr/local/bin/python3
 # pylint: disable=missing-function-docstring, missing-module-docstring
 
-import argparse
 from urllib.request import Request, urlopen
 import sys
 import click
