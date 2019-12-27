@@ -2,38 +2,13 @@
 # pylint: disable=missing-function-docstring, missing-module-docstring
 
 import argparse
-
 from urllib.request import Request, urlopen
-
 import sys
-
+import click
 from trello import TrelloApi
-
 import bs4
+
 import config
-
-
-# url = "https://www.leanproduction.com/theory-of-constraints.html"
-
-parser = argparse.ArgumentParser()
-parser.add_argument("url", help="URL for website to read")
-args = parser.parse_args()
-
-
-def calculate_read_time():
-    try:
-        req = Request(args.url, headers={"User-Agent": "Mozilla/5.0"})
-    except ValueError:
-        print(f"Invalid URL: {args.url}")
-        sys.exit()
-    webpage = urlopen(req).read()
-
-    soup = bs4.BeautifulSoup(webpage, features="html.parser")
-    title = soup.title.text
-    webpage_text = soup.get_text()
-    word_count = len(webpage_text.split())
-    time_to_read_in_min = word_count / config.READING_SPEED_PER_MIN
-    return title, time_to_read_in_min
 
 
 def setup():
@@ -42,34 +17,68 @@ def setup():
     return trello
 
 
-def get_board_list(trello, time_to_read_in_min):
-    board_ids = trello.members.get(config.USERNAME)["idBoards"]
-    return board_ids
+def parse_page(url):
+    try:
+        req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
+    except ValueError:
+        print(f"Invalid URL: {url}")
+        sys.exit()
+    webpage = urlopen(req).read()
+    return bs4.BeautifulSoup(webpage, features="html.parser")
 
 
-def print_boards(trello, board_list):
+def get_title(page_soup):
+    return page_soup.title.text
+
+
+def get_readtime_in_min(page_soup):
+    webpage_text = page_soup.get_text()
+    word_count = len(webpage_text.split())
+    return word_count / config.READING_SPEED_PER_MIN
+
+
+def create_card(title, url, time_to_read_in_min):
+    name = f"[Read Article] ({time_to_read_in_min} minutes) {title}"
+    trello.cards.new(idList=config.LIST_ID, name=name, desc=url)
+
+
+@click.group()
+def cli():
+    pass
+
+
+@click.argument("username")
+@click.command()
+def get_boards_list(username):
+    boards_list = trello.members.get(username)["idBoards"]
     print("ID, Board Name")
-    for board_id in board_list:
+    for board_id in boards_list:
         print(board_id, trello.boards.get(board_id)["name"])
 
 
-def get_lists_list(trello):
-    for trello_list in trello.boards.get_list(config.BOARD_ID):
+@click.command()
+@click.argument("board_id")
+def get_lists_list(board_id):
+    for trello_list in trello.boards.get_list(board_id):
         print(trello_list["id"], trello_list["name"])
 
 
-def create_card(trello, title, time_to_read_in_min):
-    name = f"[Read Article] ({time_to_read_in_min} minutes) {title}"
-    trello.cards.new(idList=config.LIST_ID, name=name, desc=args.url)
+@click.command()
+@click.argument(
+    "url"
+)  # , default="https://www.leanproduction.com/theory-of-constraints.html", help='Number of greetings.')
+def page(url):
+    page_soup = parse_page(url)
+    title = get_title(page_soup)
+    readtime_in_min = get_readtime_in_min(page_soup)
+
+    create_card(title, url, readtime_in_min)
 
 
-def main():
-    title, time_to_read_in_min = calculate_read_time()
+cli.add_command(page)
+cli.add_command(get_boards_list)
+cli.add_command(get_lists_list)
+
+if __name__ == "__main__":
     trello = setup()
-    # board_list = get_board_list(trello, time_to_read_in_min)
-    # print_boards(trello, board_list)
-    # get_lists_list(trello)
-    create_card(trello, title, time_to_read_in_min)
-
-
-main()
+    cli()
