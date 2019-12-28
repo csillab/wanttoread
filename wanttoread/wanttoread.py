@@ -24,8 +24,11 @@ def parse_page(url):
 def get_title(page_soup):
     return page_soup.title.text
 
-
 def get_readtime_in_min(page_soup):
+    tags_to_remove = ["script", "style"]
+    for undesired_tag in page_soup.find_all(tags_to_remove):
+        undesired_tag.decompose()
+
     webpage_text = page_soup.get_text()
     word_count = len(webpage_text.split())
     return word_count / config.READING_SPEED_PER_MIN
