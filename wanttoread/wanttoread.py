@@ -1,14 +1,14 @@
 #!/usr/local/bin/python3
 # pylint: disable=missing-function-docstring, missing-module-docstring
 
-from urllib.request import Request, urlopen
 import sys
 import click
 from trello import TrelloApi
 import bs4
 
 import config
-
+import requests
+ 
 
 def setup():
     trello = TrelloApi(config.TRELLO_APP_KEY)
@@ -17,13 +17,8 @@ def setup():
 
 
 def parse_page(url):
-    try:
-        req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
-    except ValueError:
-        print(f"Invalid URL: {url}")
-        sys.exit()
-    webpage = urlopen(req).read()
-    return bs4.BeautifulSoup(webpage, features="html.parser")
+    r = requests.get(url=url)
+    return bs4.BeautifulSoup(r.text, features="html.parser")
 
 
 def get_title(page_soup):
