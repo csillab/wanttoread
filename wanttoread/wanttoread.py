@@ -6,7 +6,7 @@ import click
 from trello import TrelloApi
 import bs4
 
-from wanttoread import config
+import wanttoread.config
 import requests
 
 

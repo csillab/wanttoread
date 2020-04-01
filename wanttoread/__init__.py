@@ -1,2 +1,2 @@
 from trello import TrelloApi
-from . import config
+from wanttoread import config
