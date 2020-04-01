@@ -1,4 +1,4 @@
-TRELLO_APP_KEY: "API_key"
-TRELLO_USER_TOKEN: "user_token"
-TRELLO_LIST_ID: "list_id"
-READING_SPEED_PER_MIN: 200
+trello_app_key: "API_key"
+trello_user_token: "user_token"
+trello_list_id: "list_id"
+reading_speed_per_min: 200

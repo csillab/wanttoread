@@ -14,8 +14,8 @@ def _get_config():
 
 def authenticate():
     config = _get_config()
-    trello = TrelloApi(config["TRELLO_APP_KEY"])
-    trello.set_token(config["TRELLO_USER_TOKEN"])
+    trello = TrelloApi(config["trello_app_key"])
+    trello.set_token(config["trello_user_token"])
     return trello
 
 
@@ -47,9 +47,9 @@ def wtr_page(url):
     config = _get_config()
     page_soup = parse_page(url)
     title = get_title(page_soup)
-    readtime_in_min = get_readtime_in_min(page_soup, config["READING_SPEED_PER_MIN"])
+    readtime_in_min = get_readtime_in_min(page_soup, config["reading_speed_per_min"])
 
-    create_card(title, url, readtime_in_min, trello, config["TRELLO_LIST_ID"])
+    create_card(title, url, readtime_in_min, trello, config["trello_list_id"])
 
 def wtr_get_lists_list(board_id):
     trello = authenticate()
