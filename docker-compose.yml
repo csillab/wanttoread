@@ -3,4 +3,4 @@ services:
   wanttoread:
     build: ./wanttoread
     volumes:
-       - ./wanttoread:/app
+       - .:/app

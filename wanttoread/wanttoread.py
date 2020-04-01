@@ -6,9 +6,9 @@ import click
 from trello import TrelloApi
 import bs4
 
-import config
+from . import config
 import requests
- 
+
 
 def setup():
     trello = TrelloApi(config.TRELLO_APP_KEY)
