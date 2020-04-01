@@ -1,3 +1,4 @@
 *pyc
-config.py
+config.yaml
+*swp
 .DS_Store
