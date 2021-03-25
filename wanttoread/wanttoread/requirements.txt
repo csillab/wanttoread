@@ -5,7 +5,7 @@ chardet==3.0.4
 Click==7.0
 idna==2.8
 pystache==0.5.4
-PyYAML==5.3.1
+PyYAML==5.4
 requests==2.22.0
 soupsieve==1.9.5
 trello==0.9.4
